@@ -2,96 +2,74 @@ import java.util.*;
 
 public class Compra {
     public static void main(String[] args) {
-        Stores s = new Stores("CALÇA",30);
-        List<Stores> ss = new ArrayList<>();
-        ss.add(s);
-        Shopping SS = new Shopping();
-        SS.setStores(ss);
-        SS.Purchased();
 
 
 
-        Scanner keyboard = new Scanner(System.in);
+        Shopping shopping = new Shopping();
+        List<Stores> storess = new ArrayList<>();
+        Scanner teclado = new Scanner(System.in);
+        boolean sair = false;
+while (true) {
 
-        double limitBalance;
-        while (true){
-            System.out.println("WHAT IS THE PURCHASE LIMIT???");
-            String amount = keyboard.next();
-            try {
-                limitBalance = Double.parseDouble(amount);
-                if (limitBalance >= 0) {
-
-                    break;
-                }
-            }catch (NumberFormatException ex){
-                ex.printStackTrace();
-
-            }
-
-
+        System.out.println("QUAL SALDO LIMITE");
+        String valor = teclado.next();
+    try {
+        shopping.setLimitBalance(Double.parseDouble(valor));
+        if(shopping.getLimitBalance()>=0){
+         break;
         }
+    }catch (NumberFormatException ex){
+       ex.printStackTrace();
+    }
 
-        Map<String,Double> Shopping = new HashMap<>();
-        List<String> products = new ArrayList<>();
-        List<Double> cost = new ArrayList<>();
+}
+        while (!sair){
+            Stores stores = new Stores();
 
+            System.out.println("NOME DO PRODUTO");
 
-        while (true){
-            System.out.println("WHAT IS THE NAME OF THE PRODUCT???");
-            String name  = keyboard.next();
+            stores.setName(teclado.next());
+           while (true){
+               System.out.println("PREÇO DO PRODUTO");
+               String valor = teclado.next();
+               try {
 
-            double moneySpent;
+                   stores.setCost(Double.parseDouble(valor));
+                   if(stores.getCost()<=shopping.getLimitBalance()){
+                       break;
+                   }
+               }catch (NumberFormatException ex){
+                 ex.printStackTrace();
+               }
 
-            while (true) {
-                try {
-                    System.out.println("HOW MUCH DOES THIS PRODUCT COST???");
-
-                    String money= keyboard.next();moneySpent = Double.parseDouble(money);
-                    if(moneySpent >=0){
-
-                        break;
-                    }
-
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
+           }
 
 
-            if(limitBalance<moneySpent){
-                if(limitBalance<=0){
-                    System.out.println("LIMIT IS OVER");
-                    break;
-                }
-                System.out.println("NOT ENOUGH LIMIT TO PURCHASE THIS");
+            if (shopping.Launchpurchase(stores)){
 
+
+                    storess.add(stores);
+                    shopping.setStores(storess);
+                    System.out.println("FOI ADD");
+
+                shopping.setLimitBalance(shopping.getLimitBalance()-stores.getCost());
             }else{
-                products.add(name);
-                cost.add(moneySpent);
-                Shopping.put(name,moneySpent);
-                limitBalance= limitBalance-moneySpent;
-
+                sair = true;
             }
-            System.out.println("LIMITE DE COMPRA AINDA EM:"+ limitBalance);
-            if(limitBalance<=0){
-                break;
-                
-            }
-        }
 
-        System.out.println("-----------PURCHASE LIST--------------");
-        for(Map.Entry<String,Double> entry: Shopping.entrySet()){
 
-            System.out.println(entry.getKey()+" ----- "+entry.getValue());
+
+
+            System.out.println(shopping.getLimitBalance());
+          if(!shopping.Launchpurchase(stores)){
+              sair = true;
+
+          }
 
         }
-        System.out.println("-----------PURCHASE LIST--------------");
 
 
-        for(int i= 0; i<products.size();i++){
-            System.out.println(cost.get(i)+"---------"+products.get(i));
-        }
+        shopping.Purchased();
 
     }
-}
+}s
